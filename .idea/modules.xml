@@ -2,38 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< Updated upstream
       <module fileurl="file://$PROJECT_DIR$/.idea/NativeApp.iml" filepath="$PROJECT_DIR$/.idea/NativeApp.iml" />
-=======
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-gradle-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-gradle-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin/expo-gradle-plugin.expo-autolinking-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin/expo-gradle-plugin.expo-autolinking-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin-shared/expo-gradle-plugin.expo-autolinking-plugin-shared.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin-shared/expo-gradle-plugin.expo-autolinking-plugin-shared.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin-shared/expo-gradle-plugin.expo-autolinking-plugin-shared.main.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin-shared/expo-gradle-plugin.expo-autolinking-plugin-shared.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin-shared/expo-gradle-plugin.expo-autolinking-plugin-shared.test.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin-shared/expo-gradle-plugin.expo-autolinking-plugin-shared.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin/expo-gradle-plugin.expo-autolinking-plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin/expo-gradle-plugin.expo-autolinking-plugin.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin/expo-gradle-plugin.expo-autolinking-plugin.test.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-plugin/expo-gradle-plugin.expo-autolinking-plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-settings-plugin/expo-gradle-plugin.expo-autolinking-settings-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-settings-plugin/expo-gradle-plugin.expo-autolinking-settings-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-settings-plugin/expo-gradle-plugin.expo-autolinking-settings-plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-settings-plugin/expo-gradle-plugin.expo-autolinking-settings-plugin.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-autolinking-settings-plugin/expo-gradle-plugin.expo-autolinking-settings-plugin.test.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-autolinking-settings-plugin/expo-gradle-plugin.expo-autolinking-settings-plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-gradle-plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-gradle-plugin.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-gradle-plugin.test.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-gradle-plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-module-gradle-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-module-gradle-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-module-gradle-plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-module-gradle-plugin.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expo-module-gradle-plugin.test.iml" filepath="$PROJECT_DIR$/.idea/modules/expo-module-gradle-plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gradle-plugin-root.iml" filepath="$PROJECT_DIR$/.idea/modules/gradle-plugin-root.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/react-native-gradle-plugin/gradle-plugin-root.react-native-gradle-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/react-native-gradle-plugin/gradle-plugin-root.react-native-gradle-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/react-native-gradle-plugin/gradle-plugin-root.react-native-gradle-plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/react-native-gradle-plugin/gradle-plugin-root.react-native-gradle-plugin.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/react-native-gradle-plugin/gradle-plugin-root.react-native-gradle-plugin.test.iml" filepath="$PROJECT_DIR$/.idea/modules/react-native-gradle-plugin/gradle-plugin-root.react-native-gradle-plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/settings-plugin/gradle-plugin-root.settings-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/settings-plugin/gradle-plugin-root.settings-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/settings-plugin/gradle-plugin-root.settings-plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/settings-plugin/gradle-plugin-root.settings-plugin.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/settings-plugin/gradle-plugin-root.settings-plugin.test.iml" filepath="$PROJECT_DIR$/.idea/modules/settings-plugin/gradle-plugin-root.settings-plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/gradle-plugin-root.shared.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/gradle-plugin-root.shared.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared-testutil/gradle-plugin-root.shared-testutil.iml" filepath="$PROJECT_DIR$/.idea/modules/shared-testutil/gradle-plugin-root.shared-testutil.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared-testutil/gradle-plugin-root.shared-testutil.main.iml" filepath="$PROJECT_DIR$/.idea/modules/shared-testutil/gradle-plugin-root.shared-testutil.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared-testutil/gradle-plugin-root.shared-testutil.test.iml" filepath="$PROJECT_DIR$/.idea/modules/shared-testutil/gradle-plugin-root.shared-testutil.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/gradle-plugin-root.shared.main.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/gradle-plugin-root.shared.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/gradle-plugin-root.shared.test.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/gradle-plugin-root.shared.test.iml" />
->>>>>>> Stashed changes
     </modules>
   </component>
 </project>
