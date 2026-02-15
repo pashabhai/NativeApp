@@ -1,0 +1,99 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Length 1860 >>
+stream
+BT
+/F1 12 Tf
+72 790 Td
+14 TL
+(NativeApp Use Case Overview) Tj
+T*
+() Tj
+T*
+(1. App Purpose) Tj
+T*
+(NativeApp helps users translate copied English text into Marathi while reading) Tj
+T*
+(content in apps like X, Kindle, Safari, and Notes. Users can paste text or) Tj
+T*
+(share selected text through the iOS Share Extension and get fast Marathi meaning.) Tj
+T*
+() Tj
+T*
+(2. Core User Flow) Tj
+T*
+(Copy text in any app -> Open NativeApp -> Paste from Clipboard -> Translate to Marathi) Tj
+T*
+(Or: Select text -> Share -> NativeAppShareExtension -> Translate) Tj
+T*
+() Tj
+T*
+(3. Primary Use Cases) Tj
+T*
+(- Students reading articles and improving understanding of difficult words.) Tj
+T*
+(- Professionals reading English content and learning Marathi equivalents.) Tj
+T*
+(- Daily readers building bilingual comprehension during normal reading habits.) Tj
+T*
+() Tj
+T*
+(4. How English Vocabulary Improves) Tj
+T*
+(- Repeated exposure to difficult English words in real reading context.) Tj
+T*
+(- Better retention through immediate meaning lookup while reading.) Tj
+T*
+(- Stronger contextual understanding instead of isolated word memorization.) Tj
+T*
+(- Spelling awareness improves via UITextChecker-based correction before translation.) Tj
+T*
+() Tj
+T*
+(5. How Marathi Vocabulary Improves) Tj
+T*
+(- Users see accurate Marathi meaning for new English words instantly.) Tj
+T*
+(- Frequent translation creates Marathi synonym familiarity over time.) Tj
+T*
+(- Practical bilingual mapping strengthens Marathi word recall in daily conversation.) Tj
+T*
+(- Re-reading translated outputs helps users internalize Marathi usage patterns.) Tj
+T*
+() Tj
+T*
+(6. Expected Learning Outcome) Tj
+T*
+(With consistent daily use, users steadily improve both English reading comprehension) Tj
+T*
+(and Marathi vocabulary depth, making bilingual communication faster and more confident.) Tj
+T*
+ET
+endstream
+endobj
+3 0 obj
+<< /Type /Page /Parent 4 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 2 0 R >>
+endobj
+4 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+5 0 obj
+<< /Type /Catalog /Pages 4 0 R >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000001997 00000 n 
+0000002123 00000 n 
+0000002180 00000 n 
+trailer
+<< /Size 6 /Root 5 0 R >>
+startxref
+2229
+%%EOF
