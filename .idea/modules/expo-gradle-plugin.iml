@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="expo-gradle-plugin" external.linked.project.path="$MODULE_DIR$/../../node_modules/expo-modules-autolinking/android/expo-gradle-plugin" external.root.project.path="$MODULE_DIR$/../../node_modules/expo-modules-autolinking/android/expo-gradle-plugin" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../node_modules/expo-modules-autolinking/android/expo-gradle-plugin">
+      <excludeFolder url="file://$MODULE_DIR$/../../node_modules/expo-modules-autolinking/android/expo-gradle-plugin/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../node_modules/expo-modules-autolinking/android/expo-gradle-plugin/build" />
+    </content>
+    <orderEntry type="jdk" jdkName="corretto-17" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

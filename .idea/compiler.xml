@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="expo-gradle-plugin" target="17" />
+      <module name="expo-gradle-plugin.expo-autolinking-plugin" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-plugin-shared" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-plugin-shared.main" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-plugin-shared.test" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-plugin.main" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-plugin.test" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-settings-plugin" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-settings-plugin.main" target="11" />
+      <module name="expo-gradle-plugin.expo-autolinking-settings-plugin.test" target="11" />
+      <module name="expo-gradle-plugin.main" target="17" />
+      <module name="expo-gradle-plugin.test" target="17" />
+      <module name="expo-module-gradle-plugin" target="11" />
+      <module name="expo-module-gradle-plugin.main" target="11" />
+      <module name="expo-module-gradle-plugin.test" target="11" />
+      <module name="gradle-plugin-root.react-native-gradle-plugin" target="11" />
+      <module name="gradle-plugin-root.react-native-gradle-plugin.main" target="11" />
+      <module name="gradle-plugin-root.react-native-gradle-plugin.test" target="11" />
+      <module name="gradle-plugin-root.settings-plugin" target="11" />
+      <module name="gradle-plugin-root.settings-plugin.main" target="11" />
+      <module name="gradle-plugin-root.settings-plugin.test" target="11" />
+      <module name="gradle-plugin-root.shared" target="11" />
+      <module name="gradle-plugin-root.shared-testutil" target="11" />
+      <module name="gradle-plugin-root.shared-testutil.main" target="11" />
+      <module name="gradle-plugin-root.shared-testutil.test" target="11" />
+      <module name="gradle-plugin-root.shared.main" target="11" />
+      <module name="gradle-plugin-root.shared.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.tools.lint:lint-typedef-remover:31.11.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.android.tools.lint" artifactId="lint-typedef-remover" version="31.11.0" baseVersion="31.11.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.lint/lint-typedef-remover/31.11.0/bc9756d95080ee30b518adf2c02d70dea0930feb/lint-typedef-remover-31.11.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
