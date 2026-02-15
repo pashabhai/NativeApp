@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.tools:sdk-common:31.11.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.android.tools" artifactId="sdk-common" version="31.11.0" baseVersion="31.11.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools/sdk-common/31.11.0/762e94439c593e31ce15e9bcf9cc95509181553/sdk-common-31.11.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
