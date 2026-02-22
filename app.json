@@ -26,23 +26,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      [
-        "expo-share-extension",
-        {
-          "activationRules": [
-            {
-              "type": "text"
-            },
-            {
-              "type": "url",
-              "max": 1
-            }
-          ],
-          "height": 460
-        }
-      ]
-    ]
+    }
   }
 }

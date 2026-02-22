@@ -1,7 +1,7 @@
 {
   "name": "nativeapp",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -12,7 +12,6 @@
     "bhashini-translation": "^1.0.4",
     "expo": "~54.0.33",
     "expo-clipboard": "~8.0.8",
-    "expo-share-extension": "^5.0.5",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
     "react-native": "0.81.5"

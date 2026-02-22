@@ -13,7 +13,6 @@ import {
   View,
 } from 'react-native';
 import { autoCorrectEnglishText } from './src/autocorrect';
-import { autoCorrectWithUITextChecker } from './src/iosAutocorrect';
 import { translateToMarathi } from './src/translate';
 
 export default function App() {
@@ -40,13 +39,7 @@ export default function App() {
 
     try {
       setIsLoading(true);
-      let correctedInput = effectiveInput;
-      try {
-        const iosCorrected = await autoCorrectWithUITextChecker(effectiveInput);
-        correctedInput = iosCorrected ?? autoCorrectEnglishText(effectiveInput);
-      } catch {
-        correctedInput = autoCorrectEnglishText(effectiveInput);
-      }
+      const correctedInput = autoCorrectEnglishText(effectiveInput);
       if (correctedInput !== effectiveInput) {
         setManualText(correctedInput);
       }
@@ -81,9 +74,7 @@ export default function App() {
           <Pressable style={styles.secondaryButton} onPress={handlePasteFromClipboard}>
             <Text style={styles.secondaryButtonText}>Paste from Clipboard</Text>
           </Pressable>
-          <Text style={styles.hintText}>
-            Auto-correct: iOS UITextChecker first, local fallback otherwise.
-          </Text>
+          <Text style={styles.hintText}>Auto-correct runs locally before translation.</Text>
         </View>
 
         <Pressable style={styles.button} onPress={handleTranslate}>
