@@ -11,7 +11,7 @@ expo-env.d.ts
 
 # Native
 .kotlin/
-.idea/
+.idea/*
 *.orig.*
 *.jks
 *.p8
@@ -40,3 +40,13 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# build / caches
+build/
+.gradle/
+android/.gradle/
+android/app/build/
+
+# local tooling
+.vscode/
+.idea/
