@@ -15,10 +15,19 @@ import {
 import { autoCorrectEnglishText } from './src/autocorrect';
 import { translateToMarathi } from './src/translate';
 
+type GeminiModelsResponse = {
+  models?: Array<{
+    name?: string;
+    supportedGenerationMethods?: string[];
+  }>;
+};
+
 export default function App() {
   const [manualText, setManualText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isModelsLoading, setIsModelsLoading] = useState(false);
+  const [modelsText, setModelsText] = useState('');
 
   const effectiveInput = manualText.trim();
 
@@ -53,6 +62,37 @@ export default function App() {
     }
   };
 
+  const handleListModels = async () => {
+    const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+    if (!apiKey) {
+      Alert.alert('Missing Gemini key', 'Set EXPO_PUBLIC_GEMINI_API_KEY in your .env file.');
+      return;
+    }
+
+    try {
+      setIsModelsLoading(true);
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`,
+      );
+      if (!response.ok) {
+        throw new Error(`Could not fetch models (${response.status}).`);
+      }
+
+      const data = (await response.json()) as GeminiModelsResponse;
+      const modelNames = (data.models ?? [])
+        .filter((model) => model.supportedGenerationMethods?.includes('generateContent'))
+        .map((model) => model.name)
+        .filter((name): name is string => Boolean(name));
+
+      setModelsText(modelNames.length ? modelNames.join('\n') : 'No generateContent models found.');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to fetch models.';
+      Alert.alert('Model list failed', message);
+    } finally {
+      setIsModelsLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -81,12 +121,25 @@ export default function App() {
           <Text style={styles.buttonText}>Translate to Marathi</Text>
         </Pressable>
 
+        <Pressable style={styles.secondaryActionButton} onPress={handleListModels}>
+          <Text style={styles.secondaryActionButtonText}>List Available Models</Text>
+        </Pressable>
+
         <View style={styles.resultCard}>
           <Text style={styles.cardLabel}>Marathi Meaning</Text>
           {isLoading ? (
             <ActivityIndicator size="small" color="#1f6f8b" />
           ) : (
             <Text style={styles.resultText}>{translatedText || 'Translation will appear here.'}</Text>
+          )}
+        </View>
+
+        <View style={styles.resultCard}>
+          <Text style={styles.cardLabel}>Gemini Models (generateContent)</Text>
+          {isModelsLoading ? (
+            <ActivityIndicator size="small" color="#1f6f8b" />
+          ) : (
+            <Text style={styles.modelsText}>{modelsText || 'Tap "List Available Models" to load.'}</Text>
           )}
         </View>
       </ScrollView>
@@ -163,6 +216,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  secondaryActionButton: {
+    backgroundColor: '#0f172a',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  secondaryActionButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
   resultCard: {
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -174,6 +238,11 @@ const styles = StyleSheet.create({
   resultText: {
     fontSize: 20,
     lineHeight: 30,
+    color: '#0b1324',
+  },
+  modelsText: {
+    fontSize: 13,
+    lineHeight: 20,
     color: '#0b1324',
   },
 });

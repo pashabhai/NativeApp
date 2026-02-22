@@ -1,31 +1,75 @@
-import bhashini from 'bhashini-translation';
+type GeminiResponse = {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{ text?: string }>;
+    };
+  }>;
+};
 
-let isBhashiniConfigured = false;
+type GeminiErrorResponse = {
+  error?: {
+    code?: number;
+    message?: string;
+    status?: string;
+  };
+};
 
-function configureBhashiniAuth() {
-  if (isBhashiniConfigured) {
-    return;
+async function callGeminiGenerateContent(
+  apiKey: string,
+  model: string,
+  input: string,
+): Promise<GeminiResponse> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: [
+                  `Explain the meaning "${input}" in Marathi`,
+                  'Write the response in 2-3 Marathi sentences.',
+                ].join('\n'),
+              },
+            ],
+          },
+        ],
+        generationConfig: { temperature: 0 },
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    let message = `Gemini translation failed (${response.status}).`;
+    try {
+      const errorData = (await response.json()) as GeminiErrorResponse;
+      if (errorData.error?.message) {
+        message = `Gemini translation failed (${response.status}): ${errorData.error.message}`;
+      }
+    } catch {
+      // Keep generic message if error body parsing fails.
+    }
+    throw new Error(message);
   }
 
-  const userId = process.env.EXPO_PUBLIC_BHASHINI_USER_ID;
-  const ulcaApiKey = process.env.EXPO_PUBLIC_BHASHINI_ULCA_API_KEY;
-  const inferenceApiKey = process.env.EXPO_PUBLIC_BHASHINI_INFERENCE_API_KEY;
-
-  if (!userId || !ulcaApiKey || !inferenceApiKey) {
-    throw new Error(
-      'Missing Bhashini credentials. Set EXPO_PUBLIC_BHASHINI_USER_ID, EXPO_PUBLIC_BHASHINI_ULCA_API_KEY, and EXPO_PUBLIC_BHASHINI_INFERENCE_API_KEY.',
-    );
-  }
-
-  bhashini.auth(userId, ulcaApiKey, inferenceApiKey);
-  isBhashiniConfigured = true;
+  return (await response.json()) as GeminiResponse;
 }
 
 export async function translateToMarathi(input: string): Promise<string> {
-  configureBhashiniAuth();
-  const translated = await bhashini.nmt('en', 'mr', input);
-  if (!translated || typeof translated !== 'string' || !translated.trim()) {
-    throw new Error('Bhashini returned an empty translation.');
+  const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing Gemini key. Set EXPO_PUBLIC_GEMINI_API_KEY.');
   }
-  return translated.trim();
+  const model = process.env.EXPO_PUBLIC_GEMINI_MODEL || 'gemini-1.5-flash';
+  const data = await callGeminiGenerateContent(apiKey, model, input);
+
+  const translated = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('').trim();
+  if (!translated) {
+    throw new Error('Empty translation received from Gemini.');
+  }
+
+  return translated;
 }
