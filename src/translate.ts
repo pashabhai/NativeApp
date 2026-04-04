@@ -30,8 +30,8 @@ async function callGeminiGenerateContent(
             parts: [
               {
                 text: [
-                  `Explain the meaning "${input}" in Marathi`,
-                  'Write the response in 2-3 Marathi sentences.',
+                  `i want to remember the marathi meaning of "${input}",  combining "marathi memory hook" method and etymology family word method in a `,
+                   'Limit the response to 5 - 6 sentences ( do not mention techniques used). start second sentence with "To remember"'
                 ].join('\n'),
               },
             ],

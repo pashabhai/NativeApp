@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import { autoCorrectEnglishText } from './src/autocorrect';
+import { initDb, saveUserRequest } from './src/db';
 import { translateToMarathi } from './src/translate';
 
 type GeminiModelsResponse = {
@@ -30,6 +31,12 @@ export default function App() {
   const [modelsText, setModelsText] = useState('');
 
   const effectiveInput = manualText.trim();
+
+  useEffect(() => {
+    initDb().catch((error) => {
+      console.warn('SQLite init failed:', error);
+    });
+  }, []);
 
   const handlePasteFromClipboard = async () => {
     const text = await Clipboard.getStringAsync();
@@ -54,6 +61,11 @@ export default function App() {
       }
       const result = await translateToMarathi(correctedInput);
       setTranslatedText(result);
+      try {
+        await saveUserRequest(correctedInput, result, 'en', 'mr');
+      } catch (saveError) {
+        console.warn('Failed to save request in SQLite:', saveError);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Could not translate selected text.';
       Alert.alert('Translation failed', message);
