@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -13,29 +14,59 @@ import {
   View,
 } from 'react-native';
 import { autoCorrectEnglishText } from './src/autocorrect';
-import { initDb, saveUserRequest } from './src/db';
+import {
+  getDefaultTargetLanguage,
+  getRecentRequests,
+  initDb,
+  type RecentRequest,
+  saveUserRequest,
+  updateRecentResponse,
+} from './src/db';
 import { translateToMarathi } from './src/translate';
-
-type GeminiModelsResponse = {
-  models?: Array<{
-    name?: string;
-    supportedGenerationMethods?: string[];
-  }>;
-};
 
 export default function App() {
   const [manualText, setManualText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isModelsLoading, setIsModelsLoading] = useState(false);
-  const [modelsText, setModelsText] = useState('');
+  const [recents, setRecents] = useState<RecentRequest[]>([]);
+  const [refreshingIds, setRefreshingIds] = useState<number[]>([]);
+  const [learnedWords, setLearnedWords] = useState<string[]>([]);
+  const [targetLanguageLabel, setTargetLanguageLabel] = useState('Target');
 
   const effectiveInput = manualText.trim();
 
+  const loadRecents = async () => {
+    try {
+      const rows = await getRecentRequests(8);
+      setRecents(rows);
+      const words = extractMarathiWords(rows.map((row) => row.response_text ?? ''));
+      setLearnedWords(words);
+    } catch (error) {
+      console.warn('Failed to load recents from SQLite:', error);
+    }
+  };
+
+  const extractMarathiWords = (texts: string[]): string[] => {
+    const words = new Set<string>();
+    for (const text of texts) {
+      const matches = text.match(/[\u0900-\u097F]{2,}/g) ?? [];
+      for (const word of matches) {
+        words.add(word);
+      }
+    }
+    return Array.from(words);
+  };
+
   useEffect(() => {
-    initDb().catch((error) => {
-      console.warn('SQLite init failed:', error);
-    });
+    initDb()
+      .then(async () => {
+        await loadRecents();
+        const targetLang = await getDefaultTargetLanguage();
+        setTargetLanguageLabel(targetLang);
+      })
+      .catch((error) => {
+        console.warn('SQLite init failed:', error);
+      });
   }, []);
 
   const handlePasteFromClipboard = async () => {
@@ -62,7 +93,8 @@ export default function App() {
       const result = await translateToMarathi(correctedInput);
       setTranslatedText(result);
       try {
-        await saveUserRequest(correctedInput, result, 'en', 'mr');
+        await saveUserRequest(correctedInput, result);
+        await loadRecents();
       } catch (saveError) {
         console.warn('Failed to save request in SQLite:', saveError);
       }
@@ -74,34 +106,18 @@ export default function App() {
     }
   };
 
-  const handleListModels = async () => {
-    const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
-    if (!apiKey) {
-      Alert.alert('Missing Gemini key', 'Set EXPO_PUBLIC_GEMINI_API_KEY in your .env file.');
-      return;
-    }
-
+  const handleRefreshRecent = async (id: number, requestText: string) => {
     try {
-      setIsModelsLoading(true);
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`,
-      );
-      if (!response.ok) {
-        throw new Error(`Could not fetch models (${response.status}).`);
-      }
-
-      const data = (await response.json()) as GeminiModelsResponse;
-      const modelNames = (data.models ?? [])
-        .filter((model) => model.supportedGenerationMethods?.includes('generateContent'))
-        .map((model) => model.name)
-        .filter((name): name is string => Boolean(name));
-
-      setModelsText(modelNames.length ? modelNames.join('\n') : 'No generateContent models found.');
+      setRefreshingIds((prev) => [...prev, id]);
+      const nextResponse = await translateToMarathi(requestText);
+      await updateRecentResponse(id, nextResponse);
+      await loadRecents();
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to fetch models.';
-      Alert.alert('Model list failed', message);
+      const message =
+        error instanceof Error ? error.message : 'Failed to refresh recent item from Gemini.';
+      Alert.alert('Refresh failed', message);
     } finally {
-      setIsModelsLoading(false);
+      setRefreshingIds((prev) => prev.filter((itemId) => itemId !== id));
     }
   };
 
@@ -114,27 +130,25 @@ export default function App() {
 
         <View style={styles.selectionCard}>
           <Text style={styles.cardLabel}>Text from X/Kindle (Paste here)</Text>
-          <TextInput
-            multiline
-            value={manualText}
-            onChangeText={setManualText}
-            placeholder="Paste copied text here from another app..."
-            style={styles.pasteInput}
-            autoCorrect={false}
-            spellCheck={false}
-          />
-          <Pressable style={styles.secondaryButton} onPress={handlePasteFromClipboard}>
-            <Text style={styles.secondaryButtonText}>Paste from Clipboard</Text>
-          </Pressable>
+          <View style={styles.pasteContainer}>
+            <TextInput
+              multiline
+              value={manualText}
+              onChangeText={setManualText}
+              placeholder="Paste copied text..."
+              style={styles.pasteInput}
+              autoCorrect={false}
+              spellCheck={false}
+            />
+            <Pressable style={styles.pasteIconButton} onPress={handlePasteFromClipboard}>
+              <Image source={require('./assets/icons8-paste-48.png')} style={styles.pasteIconImage} />
+            </Pressable>
+          </View>
           <Text style={styles.hintText}>Auto-correct runs locally before translation.</Text>
         </View>
 
         <Pressable style={styles.button} onPress={handleTranslate}>
           <Text style={styles.buttonText}>Translate to Marathi</Text>
-        </Pressable>
-
-        <Pressable style={styles.secondaryActionButton} onPress={handleListModels}>
-          <Text style={styles.secondaryActionButtonText}>List Available Models</Text>
         </Pressable>
 
         <View style={styles.resultCard}>
@@ -147,11 +161,43 @@ export default function App() {
         </View>
 
         <View style={styles.resultCard}>
-          <Text style={styles.cardLabel}>Gemini Models (generateContent)</Text>
-          {isModelsLoading ? (
-            <ActivityIndicator size="small" color="#1f6f8b" />
+          <Text style={styles.cardLabel}>Recents</Text>
+          {recents.length === 0 ? (
+            <Text style={styles.modelsText}>No recent requests yet.</Text>
           ) : (
-            <Text style={styles.modelsText}>{modelsText || 'Tap "List Available Models" to load.'}</Text>
+            recents.map((item) => (
+              <View key={item.id} style={styles.recentItem}>
+                <View style={styles.recentHeaderRow}>
+                  <Text style={styles.recentRequest}>{item.request_text}</Text>
+                  <Pressable
+                    style={styles.refreshIconButton}
+                    onPress={() => handleRefreshRecent(item.id, item.request_text)}
+                  >
+                    {refreshingIds.includes(item.id) ? (
+                      <ActivityIndicator size="small" color="#0f172a" />
+                    ) : (
+                      <Text style={styles.refreshIcon}>↻</Text>
+                    )}
+                  </Pressable>
+                </View>
+                <Text style={styles.recentResponse}>{item.response_text ?? ''}</Text>
+              </View>
+            ))
+          )}
+        </View>
+
+        <View style={styles.resultCard}>
+          <Text style={styles.cardLabel}>{`Learned ${targetLanguageLabel} Words`}</Text>
+          {learnedWords.length === 0 ? (
+            <Text style={styles.modelsText}>No learned words yet.</Text>
+          ) : (
+            <View style={styles.wordsWrap}>
+              {learnedWords.map((word) => (
+                <View key={word} style={styles.wordChip}>
+                  <Text style={styles.wordChipText}>{word}</Text>
+                </View>
+              ))}
+            </View>
           )}
         </View>
       </ScrollView>
@@ -191,26 +237,40 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   pasteInput: {
-    minHeight: 100,
+    width: '100%',
+    minHeight: 72,
     borderWidth: 1,
     borderColor: '#dce2f0',
     borderRadius: 8,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    paddingLeft: 46,
     textAlignVertical: 'top',
-    marginBottom: 10,
+    fontSize: 14,
+    lineHeight: 20,
     color: '#111827',
     backgroundColor: '#ffffff',
   },
-  secondaryButton: {
-    backgroundColor: '#e2e8f0',
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: 'center',
+  pasteContainer: {
+    position: 'relative',
+    marginBottom: 10,
   },
-  secondaryButtonText: {
-    color: '#0f172a',
-    fontSize: 14,
-    fontWeight: '600',
+  pasteIconButton: {
+    position: 'absolute',
+    bottom: 6,
+    left: 6,
+    width: 30,
+    height: 30,
+    backgroundColor: '#e2e8f0',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#dce2f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pasteIconImage: {
+    width: 14,
+    height: 14,
   },
   hintText: {
     marginTop: 8,
@@ -219,24 +279,14 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#1f6f8b',
-    paddingVertical: 14,
-    borderRadius: 10,
+    minHeight: 42,
+    borderRadius: 8,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  secondaryActionButton: {
-    backgroundColor: '#0f172a',
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  secondaryActionButtonText: {
-    color: '#ffffff',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
   },
   resultCard: {
@@ -256,5 +306,56 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: '#0b1324',
+  },
+  recentHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  refreshIconButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  refreshIcon: {
+    color: '#0f172a',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  recentItem: {
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+  },
+  recentRequest: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#0f172a',
+    marginBottom: 2,
+  },
+  recentResponse: {
+    fontSize: 12,
+    lineHeight: 18,
+    color: '#334155',
+  },
+  wordsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  wordChip: {
+    backgroundColor: '#e2e8f0',
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  wordChipText: {
+    fontSize: 13,
+    color: '#0f172a',
+    fontWeight: '600',
   },
 });
