@@ -117,28 +117,72 @@ export type RecentRequest = {
   id: number;
   request_text: string;
   response_text: string | null;
+  version: string | null;
   created_ts: string;
 };
 
 export async function getRecentRequests(limit = 10): Promise<RecentRequest[]> {
   const db = await getDb();
   return db.getAllAsync<RecentRequest>(
-    `SELECT id, request_text, response_text, created_ts
-     FROM ${TABLE_NAME}
-     WHERE "delete" = 0
-     ORDER BY id DESC
+    `SELECT t.id, t.request_text, t.response_text, t.version, t.created_ts
+     FROM ${TABLE_NAME} t
+     INNER JOIN (
+       SELECT lower(trim(request_text)) AS req_key, MAX(id) AS max_id
+       FROM ${TABLE_NAME}
+       WHERE "delete" = 0
+       GROUP BY lower(trim(request_text))
+     ) latest ON latest.max_id = t.id
+     ORDER BY t.id DESC
      LIMIT ?;`,
     limit,
   );
 }
 
-export async function updateRecentResponse(id: number, responseText: string) {
+export async function createNextVersionForRequest(requestText: string, responseText: string) {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{
+    word_type: string | null;
+    mapping_id: number | null;
+    version: string | null;
+  }>(
+    `SELECT word_type, mapping_id, version
+     FROM ${TABLE_NAME}
+     WHERE "delete" = 0 AND lower(trim(request_text)) = lower(trim(?))
+     ORDER BY id DESC;`,
+    requestText,
+  );
+
+  const latest = rows[0] ?? null;
+  const currentMaxVersion = rows.reduce((max, row) => {
+    const parsed = Number.parseFloat(row.version ?? '0');
+    return Number.isFinite(parsed) ? Math.max(max, parsed) : max;
+  }, 0);
+  const nextVersion = (currentMaxVersion + 1).toString();
+  const now = new Date().toISOString();
+
+  await db.runAsync(
+    `INSERT INTO ${TABLE_NAME}
+     (request_text, response_text, word_type, version, fav, "delete", comments, mapping_id, created_ts, updated_ts)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+    requestText,
+    responseText,
+    latest?.word_type ?? 'unknown',
+    nextVersion,
+    0,
+    0,
+    'Auto-saved refresh version',
+    latest?.mapping_id ?? null,
+    now,
+    now,
+  );
+}
+
+export async function deleteRecentRequest(id: number) {
   const db = await getDb();
   await db.runAsync(
     `UPDATE ${TABLE_NAME}
-     SET response_text = ?, updated_ts = ?
+     SET "delete" = 1, updated_ts = ?
      WHERE id = ?;`,
-    responseText,
     new Date().toISOString(),
     id,
   );
@@ -169,4 +213,37 @@ export async function getDefaultTargetLanguage(): Promise<string> {
     'utf-8',
   );
   return (rows[0]?.target_lang ?? 'target').trim() || 'target';
+}
+
+export async function getSavedResponseForRequest(requestText: string): Promise<string | null> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{ response_text: string | null }>(
+    `SELECT response_text
+     FROM ${TABLE_NAME}
+     WHERE "delete" = 0
+       AND lower(trim(request_text)) = lower(trim(?))
+       AND response_text IS NOT NULL
+     ORDER BY id DESC
+     LIMIT 1;`,
+    requestText,
+  );
+  return rows[0]?.response_text ?? null;
+}
+
+export type RequestVersion = {
+  id: number;
+  version: string | null;
+  response_text: string | null;
+  created_ts: string;
+};
+
+export async function getRequestVersions(requestText: string): Promise<RequestVersion[]> {
+  const db = await getDb();
+  return db.getAllAsync<RequestVersion>(
+    `SELECT id, version, response_text, created_ts
+     FROM ${TABLE_NAME}
+     WHERE "delete" = 0 AND lower(trim(request_text)) = lower(trim(?))
+     ORDER BY id DESC;`,
+    requestText,
+  );
 }
